@@ -1,0 +1,193 @@
+---
+title: "Data manipulation/wrangling/transforming"
+subtitle: "...with `dplyr` and `tidyr`"
+# For author options see : 
+# https://quarto.org/docs/authoring/front-matter.html#authors-and-affiliations
+# NB: multiple authors can be added here.
+author:
+  - name:
+      given: Joshua
+      family: Wilson Black
+    email: joshua.black@canterbury.ac.nz
+    orcid: 0000-0002-8272-5763
+    affiliation: 
+      - "Te Kāhui Roro Reo | New Zealand Institute of Language, Brain and Behaviour"
+      - "Te Whare Wānanga o Waitaha | University of Canterbury"
+format:
+  revealjs:
+    theme: [custom.scss]
+    incremental: true
+    logo: images/NZILBB-small.svg
+    template-partials:
+      - title-slide.html
+    title-slide-attributes:
+      # If you have Marsden funding, change image name to `nzilbb-uc-marsden.svg`
+      data-background-image: images/nzilbb-uc.svg
+      # First number controls the horizontal position, second controls vertical.
+      data-background-position: '50% 5%'
+      # Controls size of image relative to width of the slide.
+      data-background-size: 70%
+    embed-resources: false
+    include-in-header:
+      - text: |
+          <link rel="icon" type="image/png" sizes="32x32" href=".//images/fav.png" />
+bibliography: 
+  - grateful-refs.bib
+editor: 
+  markdown: 
+    wrap: 72
+execute: 
+  echo: true
+knitr:
+  opts_chunk: 
+    dev: "png"
+    dev.args: 
+      bg: "transparent"
+---
+
+```{r}
+#| echo: false
+# This is a place to load packages in the background (i.e., this block won't 
+# apear on the slides because `echo` is false.)
+library(tidyverse)
+library(here)
+```
+
+# Overview
+
+- 'tidy' data.
+- `dplyr`: "a grammar of data manipulation"
+    - The 'verbs'
+- `tidyr`: a tool to "help you create tidy data"
+- Examples
+
+# 'tidy' data
+
+## 'tidy' data
+
+:::: fragment
+> Tidy data is data where:
+>
+> 1. Each variable is a column; each column is a variable.
+> 2. Each observation is a row; each row is an observation.
+> 3. Each value is a cell; each cell is a single value.
+> 
+::: fragment
+> (<https://tidyr.tidyverse.org/>)
+:::
+
+
+
+## By contrast: {.smaller}
+
+:::: {.columns}
+
+::: {.column width = "70%"}
+
+- Storing data in column names
+- More than one variable stored in a column.
+- Different 'observational types' in one dataframe.
+    - e.g. Participant info + tokens
+- For more, see: <https://tidyr.tidyverse.org/articles/tidy-data.html>
+- It's possible to worry too much about this...
+
+:::
+
+
+::: {.column width="30%"}
+![](images/oscar.png)
+:::
+
+::::
+
+# `dplyr`
+
+## `dplyr`
+
+- A 'grammar' for data manipulation.
+    - Grammar in the sense of `ggplot2` ('Grammar of Graphics')
+    - An abstract, universal, way of thinking about structure.
+- The core: a set of 'verbs' --- things you can do to data.
+- The ideal of `dplyr`:
+     - Reading: mostly human readable
+     - Writing: encourages us to break up problem to a series of simple steps
+
+## Some verbs
+
+- We'll learn these in context, but, for example:
+    - `select()`: select one or more columns
+    - `filter()`: filter data
+    - `mutate()`: create new columns
+
+## Pipes {.smaller}
+
+- We string together verbs using pipes.
+    - `|>` or `%>%`
+- e.g.:
+
+::: fragment
+```r
+my_data <- my_data |> 
+  filter(
+    height < 190
+  ) |> 
+  mutate(
+    height_ft = height * 0.032808399,
+    mean_score = mean(test_1, test_2, test_3)
+  )
+```
+:::
+
+- **NB:** you can use variable names inside these functions (the `dplyr` 'verbs').
+- Saves you constantly having to type, e.g., `my_data$height`.
+
+## Grouped data 
+
+- We can apply the same steps to groups in the data *independently*.
+    - e.g., apply a series of opperations separately to male and female 
+experimental participants.
+    - `group_by()`: Creates groups
+- Some functions implicitly group...
+    - `count(sex)`: if you had a column called 'sex', this could group the 
+    data by the values in 'sex' and count how many rows there are in each group.
+    
+
+
+## Pipe problems
+
+{{< video https://www.youtube.com/watch?v=Ib-Xwuo2uss width="100%" height="80%">}}
+
+## Blocked
+
+- Two kinds of pipe problem:
+  1. Nothings coming through [(i.e., you get an error message).]{.fragment}
+  2. Mysterious liquids [(i.e., not what you expected and/or warning messages).]{.fragment}
+
+## Find an 'inspection opening'
+
+- We look at the output of each stage of a pipeline.
+- We'll look at this in a real example in a moment.
+
+# `tidyr`
+
+## Pivoting
+
+![](images/tidyr-longer-wider.gif)
+
+::: footer
+Source: Gavin Simpson via Garrick Aden-Buie’s (`@grrrck`) Tidy Animated Verbs modified by Mara Averick (`@dataandme`)
+:::
+
+# References
+
+```{r}
+#| echo: false
+grateful::nocite_references(
+  grateful::cite_packages(output = "citekeys", out.dir = here())
+)
+```
+
+
+::: refs
+
+:::
