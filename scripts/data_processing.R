@@ -110,7 +110,7 @@ vowels_long <- vowels_filtered |>
     # reading?
     names_to = "formant_type",
     # What do we want to name the column containing the formant values?
-    values_to = "formant_values"
+    values_to = "formant_value"
   )
 
 # What is we want a single row for each speaker, with their mean value for each
