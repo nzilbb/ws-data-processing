@@ -287,7 +287,17 @@ Image source: Gavin Simpson via Garrick Aden-Buie’s (`@grrrck`) Tidy Animated 
 
 ## What now?
 
-Work thorugh 
+:::fragment
+```r
+usethis::create_from_github(
+  "https://github.com/nzilbb/ws-data-processing"
+)
+```
+:::
+
+- Work through material at <https://nzilbb.github.io/statistics_workshops/chapters/data_processing.html>
+- The script in `scripts/data_processing.R` contains some of the code already.
+- The data is in the `data` directory.
 
 
 # References
