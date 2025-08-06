@@ -1,6 +1,6 @@
 ---
-title: "Data manipulation/wrangling/transforming"
-subtitle: "...with `dplyr` and `tidyr`"
+title: "Foundations"
+subtitle: "Session 2: Data processing"
 # For author options see : 
 # https://quarto.org/docs/authoring/front-matter.html#authors-and-affiliations
 # NB: multiple authors can be added here.
@@ -51,17 +51,175 @@ knitr:
 # apear on the slides because `echo` is false.)
 library(tidyverse)
 library(here)
+library(kableExtra)
 ```
 
 # Overview
 
-- 'tidy' data.
-- `dplyr`: "a grammar of data manipulation"
-    - The 'verbs'
-- `tidyr`: a tool to "help you create tidy data"
-- Examples
+## Overview
 
-# 'tidy' data
+- `tidyverse` and base R.
+- Functions from two `tidyverse` packages:
+  1. `dplyr`: "a grammar of data manipulation"
+    - The 'verbs'
+  2. `tidyr`: a tool to "help you create tidy data"
+  
+## Code and slides
+
+```r
+usethis::create_from_github(
+  "https://github.com/nzilbb/ws-data-processing"
+)
+```
+# `tidyverse`
+
+## What is the `tidyverse`?
+
+- A set of packages for R which follow a similar philosophy.
+    - they are 'opinionated' tools.
+- These include: 
+    - `dplyr` - for data manipulation
+    - `tidyr` - for creating 'tidy' data  
+    - `ggplot2` - for plotting (see next week)
+    
+## What is base R?
+
+- ...anything other than the `tidyverse`
+- R has techniques for data processing built in.
+    - e.g., from last week, filtering with a Boolean vector.
+
+::: fragment
+```r
+# Filtering
+toddlers[toddlers$name == "Deano", ]
+toddlers[toddlers$happiness_score < 2, ]
+```
+:::
+
+<ul>- ...or creating new columns.</ul>
+    
+::: fragment
+```r
+# Create new column.
+toddlers$pick_up_time <- c("12:45", "1:00", "2:45")
+```
+:::
+
+## Interaction between base R and the tidyverse
+
+- A salient feature of tidyverse code: `%>%`
+    - the 'pipe' sends the output of one function as an input to another
+    function.
+    - Comes with the tidyverse package `magrittr`.
+- This was so popular, there is now a base R version: `|>`
+    - Introduced in R 4.1.0.
+
+# `dplyr`
+
+## `dplyr`
+
+- A 'grammar' for data manipulation.
+    - An abstract, universal, way of thinking about data problems and solutions.
+- The core: a set of 'verbs' --- things you can do to data.
+- The ideal of `dplyr`:
+     - Reading: mostly human readable
+     - Writing: encourages us to break problems into a series of simple steps
+
+## Some verbs
+
+- Here's some `dplyr` verbs:
+    - `select()`: select one or more columns
+    - `filter()`: filter data
+    - `mutate()`: create new columns
+- We'll learn how these work in context.
+
+## Pipes {.smaller}
+
+- We string together verbs using pipes.
+    - `|>` or `%>%`
+- e.g.:
+
+::: fragment
+```r
+sad_toddlers <- toddlers |> 
+  filter(
+    happiness < 2
+  ) |> 
+  mutate(
+    hungry = (current_time - last_meal_time) > 2
+  )
+```
+:::
+
+- **NB:** you can use variable names inside these functions (the `dplyr` 'verbs').
+- You don't constantly have to type, e.g., `toddlers$happiness`.
+
+## Grouped data 
+
+- We can apply the same steps to groups in the data *independently*.
+    - e.g., apply a series of opperations separately to male and female
+experimental participants.
+    - `group_by()`: Creates groups
+- Some functions implicitly group...
+    - `count(age_in_months)`: if you had a column called 'age_in_months', 
+    this would group the data by the values in `age_in_months` and count how 
+    many rows there are in each group.
+    
+## {background-iframe="https://www.youtube.com/embed/Ib-Xwuo2uss?si=TZqyobZELbzGu0r8" background-color="black"}
+
+::: r-stack
+
+:::: {.fragment .inverse-backlight style="padding: 15px; border-radius: 20px; background: rgba(22, 31, 50, 0.8)"}
+- Two kinds of pipe problem:
+  1. Nothings coming through [(i.e., you get an error message).]{.fragment}
+  2. Mysterious liquids [(i.e., not what you expected and/or warning messages).]{.fragment}
+- Find an 'inspection opening'
+    - Check output is correct at each step.
+    - Highlight parts of the pipe and press 'Run'
+
+::::
+
+:::: {.fragment style="padding: 15px; border-radius: 20px; background: rgba(22, 31, 50, 1)"}
+
+```{r}
+#| output-location: fragment
+#| error: true
+penguins <- penguins |> 
+  filter(
+    Island == "Torgersen"
+  ) |> 
+  mutate(
+    mean_bill = mean(bill_len)
+  )
+```
+
+- Error in `filter()`? 
+- In this case: misspelled column.
+
+::::
+
+:::: {.fragment style="padding: 15px; border-radius: 20px; background: rgba(22, 31, 50, 1)"}
+
+```{r}
+#| output-location: fragment
+penguins <- penguins |> 
+  filter(
+    island == "Torgersen"
+  ) |> 
+  mutate(
+    mean_bill = mean(bill_len)
+  )
+
+penguins$mean_bill
+```
+
+- Where's my mean bill length!?
+
+::::
+
+:::
+
+# `tidyr`
 
 ## 'tidy' data
 
@@ -75,8 +233,6 @@ library(here)
 ::: fragment
 > (<https://tidyr.tidyverse.org/>)
 :::
-
-
 
 ## By contrast: {.smaller}
 
@@ -100,83 +256,39 @@ library(here)
 
 ::::
 
-# `dplyr`
+## Pivoting {.smaller}
 
-## `dplyr`
+::: columns
 
-- A 'grammar' for data manipulation.
-    - Grammar in the sense of `ggplot2` ('Grammar of Graphics')
-    - An abstract, universal, way of thinking about structure.
-- The core: a set of 'verbs' --- things you can do to data.
-- The ideal of `dplyr`:
-     - Reading: mostly human readable
-     - Writing: encourages us to break up problem to a series of simple steps
-
-## Some verbs
-
-- We'll learn these in context, but, for example:
-    - `select()`: select one or more columns
-    - `filter()`: filter data
-    - `mutate()`: create new columns
-
-## Pipes {.smaller}
-
-- We string together verbs using pipes.
-    - `|>` or `%>%`
-- e.g.:
-
-::: fragment
-```r
-my_data <- my_data |> 
-  filter(
-    height < 190
-  ) |> 
-  mutate(
-    height_ft = height * 0.032808399,
-    mean_score = mean(test_1, test_2, test_3)
-  )
-```
-:::
-
-- **NB:** you can use variable names inside these functions (the `dplyr` 'verbs').
-- Saves you constantly having to type, e.g., `my_data$height`.
-
-## Grouped data 
-
-- We can apply the same steps to groups in the data *independently*.
-    - e.g., apply a series of opperations separately to male and female 
-experimental participants.
-    - `group_by()`: Creates groups
-- Some functions implicitly group...
-    - `count(sex)`: if you had a column called 'sex', this could group the 
-    data by the values in 'sex' and count how many rows there are in each group.
-    
-
-
-## Pipe problems
-
-{{< video https://www.youtube.com/watch?v=Ib-Xwuo2uss width="100%" height="80%">}}
-
-## Blocked
-
-- Two kinds of pipe problem:
-  1. Nothings coming through [(i.e., you get an error message).]{.fragment}
-  2. Mysterious liquids [(i.e., not what you expected and/or warning messages).]{.fragment}
-
-## Find an 'inspection opening'
-
-- We look at the output of each stage of a pipeline.
-- We'll look at this in a real example in a moment.
-
-# `tidyr`
-
-## Pivoting
+:::: {.column width = "40%"}
 
 ![](images/tidyr-longer-wider.gif)
 
-::: footer
-Source: Gavin Simpson via Garrick Aden-Buie’s (`@grrrck`) Tidy Animated Verbs modified by Mara Averick (`@dataandme`)
+::::
+
+:::: {.column width = "60%"}
+
+- Are our 'observations' participants, vowel tokens, or individual formant readings.
+- Varies with context and sometimes we need to switch between contexts.
+- Wider data has more columns and (usually) fewer rows.
+- Longer data has fewer columns and (usually) more rows.
+- `tidyr` provides the functions `pivot_wider()` and `pivot_longer()`.
+
+
+::::
+
 :::
+
+::: footer
+Image source: Gavin Simpson via Garrick Aden-Buie’s (`@grrrck`) Tidy Animated Verbs modified by Mara Averick (`@dataandme`)
+:::
+
+# What now?
+
+## What now?
+
+Work thorugh 
+
 
 # References
 

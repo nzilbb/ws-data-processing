@@ -10,7 +10,7 @@
   <meta name="generator" content="quarto-1.6.39">
 
   <meta name="author" content="Joshua Wilson Black">
-  <title>Data manipulation/wrangling/transforming</title>
+  <title>Foundations</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
@@ -213,8 +213,8 @@
     <div class="slides">
 
 <section id="title-slide" data-background-image="images/nzilbb-uc.svg" data-background-position="50% 5%" data-background-size="70%" class="quarto-title-block center">
-  <h1 class="title">Data manipulation/wrangling/transforming</h1>
-  <p class="subtitle">…with <code>dplyr</code> and <code>tidyr</code></p>
+  <h1 class="title">Foundations</h1>
+  <p class="subtitle">Session 2: Data processing</p>
 
 <div class="quarto-title-authors">
 <div class="quarto-title-author">
@@ -235,25 +235,232 @@ Joshua Wilson Black <a href="https://orcid.org/0000-0002-8272-5763" class="quart
 
 
 </section>
+<section>
 <section id="overview" class="title-slide slide level1 center">
 <h1>Overview</h1>
+
+</section>
+<section id="overview-1" class="slide level2">
+<h2>Overview</h2>
 <ul>
-<li class="fragment">‘tidy’ data.</li>
-<li class="fragment"><code>dplyr</code>: “a grammar of data manipulation”
+<li class="fragment"><code>tidyverse</code> and base R.</li>
+<li class="fragment">Functions from two <code>tidyverse</code> packages:
+<ol type="1">
+<li class="fragment"><code>dplyr</code>: “a grammar of data manipulation”</li>
+</ol>
 <ul>
 <li class="fragment">The ‘verbs’</li>
-</ul></li>
+</ul>
+<ol start="2" type="1">
 <li class="fragment"><code>tidyr</code>: a tool to “help you create tidy data”</li>
-<li class="fragment">Examples</li>
+</ol></li>
 </ul>
 </section>
-
+<section id="code-and-slides" class="slide level2">
+<h2>Code and slides</h2>
+<div class="sourceCode" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href=""></a>usethis<span class="sc">::</span><span class="fu">create_from_github</span>(</span>
+<span id="cb1-2"><a href=""></a>  <span class="st">"https://github.com/nzilbb/ws-data-processing"</span></span>
+<span id="cb1-3"><a href=""></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section></section>
 <section>
-<section id="tidy-data" class="title-slide slide level1 center">
-<h1>‘tidy’ data</h1>
+<section id="tidyverse" class="title-slide slide level1 center">
+<h1><code>tidyverse</code></h1>
 
 </section>
-<section id="tidy-data-1" class="slide level2">
+<section id="what-is-the-tidyverse" class="slide level2">
+<h2>What is the <code>tidyverse</code>?</h2>
+<ul>
+<li class="fragment">A set of packages for R which follow a similar philosophy.
+<ul>
+<li class="fragment">they are ‘opinionated’ tools.</li>
+</ul></li>
+<li class="fragment">These include:
+<ul>
+<li class="fragment"><code>dplyr</code> - for data manipulation</li>
+<li class="fragment"><code>tidyr</code> - for creating ‘tidy’ data<br>
+</li>
+<li class="fragment"><code>ggplot2</code> - for plotting (see next week)</li>
+</ul></li>
+</ul>
+</section>
+<section id="what-is-base-r" class="slide level2">
+<h2>What is base R?</h2>
+<ul>
+<li class="fragment">…anything other than the <code>tidyverse</code></li>
+<li class="fragment">R has techniques for data processing built in.
+<ul>
+<li class="fragment">e.g., from last week, filtering with a Boolean vector.</li>
+</ul></li>
+</ul>
+<div class="fragment">
+<div class="sourceCode" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href=""></a><span class="co"># Filtering</span></span>
+<span id="cb2-2"><a href=""></a>toddlers[toddlers<span class="sc">$</span>name <span class="sc">==</span> <span class="st">"Deano"</span>, ]</span>
+<span id="cb2-3"><a href=""></a>toddlers[toddlers<span class="sc">$</span>happiness_score <span class="sc">&lt;</span> <span class="dv">2</span>, ]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<ul>
+<ul>
+<li class="fragment">…or creating new columns.
+</li></ul>
+</ul>
+<div class="fragment">
+<div class="sourceCode" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href=""></a><span class="co"># Create new column.</span></span>
+<span id="cb3-2"><a href=""></a>toddlers<span class="sc">$</span>pick_up_time <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"12:45"</span>, <span class="st">"1:00"</span>, <span class="st">"2:45"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="interaction-between-base-r-and-the-tidyverse" class="slide level2">
+<h2>Interaction between base R and the tidyverse</h2>
+<ul>
+<li class="fragment">A salient feature of tidyverse code: <code>%&gt;%</code>
+<ul>
+<li class="fragment">the ‘pipe’ sends the output of one function as an input to another function.</li>
+<li class="fragment">Comes with the tidyverse package <code>magrittr</code>.</li>
+</ul></li>
+<li class="fragment">This was so popular, there is now a base R version: <code>|&gt;</code>
+<ul>
+<li class="fragment">Introduced in R 4.1.0.</li>
+</ul></li>
+</ul>
+</section></section>
+<section>
+<section id="dplyr" class="title-slide slide level1 center">
+<h1><code>dplyr</code></h1>
+
+</section>
+<section id="dplyr-1" class="slide level2">
+<h2><code>dplyr</code></h2>
+<ul>
+<li class="fragment">A ‘grammar’ for data manipulation.
+<ul>
+<li class="fragment">An abstract, universal, way of thinking about data problems and solutions.</li>
+</ul></li>
+<li class="fragment">The core: a set of ‘verbs’ — things you can do to data.</li>
+<li class="fragment">The ideal of <code>dplyr</code>:
+<ul>
+<li class="fragment">Reading: mostly human readable</li>
+<li class="fragment">Writing: encourages us to break problems into a series of simple steps</li>
+</ul></li>
+</ul>
+</section>
+<section id="some-verbs" class="slide level2">
+<h2>Some verbs</h2>
+<ul>
+<li class="fragment">Here’s some <code>dplyr</code> verbs:
+<ul>
+<li class="fragment"><code>select()</code>: select one or more columns</li>
+<li class="fragment"><code>filter()</code>: filter data</li>
+<li class="fragment"><code>mutate()</code>: create new columns</li>
+</ul></li>
+<li class="fragment">We’ll learn how these work in context.</li>
+</ul>
+</section>
+<section id="pipes" class="slide level2 smaller">
+<h2>Pipes</h2>
+<ul>
+<li class="fragment">We string together verbs using pipes.
+<ul>
+<li class="fragment"><code>|&gt;</code> or <code>%&gt;%</code></li>
+</ul></li>
+<li class="fragment">e.g.:</li>
+</ul>
+<div class="fragment">
+<div class="sourceCode" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href=""></a>sad_toddlers <span class="ot">&lt;-</span> toddlers <span class="sc">|&gt;</span> </span>
+<span id="cb4-2"><a href=""></a>  <span class="fu">filter</span>(</span>
+<span id="cb4-3"><a href=""></a>    happiness <span class="sc">&lt;</span> <span class="dv">2</span></span>
+<span id="cb4-4"><a href=""></a>  ) <span class="sc">|&gt;</span> </span>
+<span id="cb4-5"><a href=""></a>  <span class="fu">mutate</span>(</span>
+<span id="cb4-6"><a href=""></a>    <span class="at">hungry =</span> (current_time <span class="sc">-</span> last_meal_time) <span class="sc">&gt;</span> <span class="dv">2</span></span>
+<span id="cb4-7"><a href=""></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<ul>
+<li class="fragment"><strong>NB:</strong> you can use variable names inside these functions (the <code>dplyr</code> ‘verbs’).</li>
+<li class="fragment">You don’t constantly have to type, e.g., <code>toddlers$happiness</code>.</li>
+</ul>
+</section>
+<section id="grouped-data" class="slide level2">
+<h2>Grouped data</h2>
+<ul>
+<li class="fragment">We can apply the same steps to groups in the data <em>independently</em>.
+<ul>
+<li class="fragment">e.g., apply a series of opperations separately to male and female experimental participants.</li>
+<li class="fragment"><code>group_by()</code>: Creates groups</li>
+</ul></li>
+<li class="fragment">Some functions implicitly group…
+<ul>
+<li class="fragment"><code>count(age_in_months)</code>: if you had a column called ‘age_in_months’, this would group the data by the values in <code>age_in_months</code> and count how many rows there are in each group.</li>
+</ul></li>
+</ul>
+</section>
+<section id="section" class="slide level2" data-background-iframe="https://www.youtube.com/embed/Ib-Xwuo2uss?si=TZqyobZELbzGu0r8" data-background-color="black">
+<h2></h2>
+<div class="r-stack">
+<div class="fragment inverse-backlight" style="padding: 15px; border-radius: 20px; background: rgba(22, 31, 50, 0.8)">
+<ul>
+<li class="fragment">Two kinds of pipe problem:
+<ol type="1">
+<li class="fragment">Nothings coming through <span class="fragment">(i.e., you get an error message).</span></li>
+<li class="fragment">Mysterious liquids <span class="fragment">(i.e., not what you expected and/or warning messages).</span></li>
+</ol></li>
+<li class="fragment">Find an ‘inspection opening’
+<ul>
+<li class="fragment">Check output is correct at each step.</li>
+<li class="fragment">Highlight parts of the pipe and press ‘Run’</li>
+</ul></li>
+</ul>
+</div>
+<div class="fragment" style="padding: 15px; border-radius: 20px; background: rgba(22, 31, 50, 1)">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href=""></a>penguins <span class="ot">&lt;-</span> penguins <span class="sc">|&gt;</span> </span>
+<span id="cb5-2"><a href=""></a>  <span class="fu">filter</span>(</span>
+<span id="cb5-3"><a href=""></a>    Island <span class="sc">==</span> <span class="st">"Torgersen"</span></span>
+<span id="cb5-4"><a href=""></a>  ) <span class="sc">|&gt;</span> </span>
+<span id="cb5-5"><a href=""></a>  <span class="fu">mutate</span>(</span>
+<span id="cb5-6"><a href=""></a>    <span class="at">mean_bill =</span> <span class="fu">mean</span>(bill_len)</span>
+<span id="cb5-7"><a href=""></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell fragment">
+<div class="cell-output cell-output-error">
+<pre><code>Error in `filter()`:
+ℹ In argument: `Island == "Torgersen"`.
+Caused by error:
+! object 'Island' not found</code></pre>
+</div>
+</div>
+<ul>
+<li class="fragment">Error in <code>filter()</code>?</li>
+<li class="fragment">In this case: misspelled column.</li>
+</ul>
+</div>
+<div class="fragment" style="padding: 15px; border-radius: 20px; background: rgba(22, 31, 50, 1)">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href=""></a>penguins <span class="ot">&lt;-</span> penguins <span class="sc">|&gt;</span> </span>
+<span id="cb7-2"><a href=""></a>  <span class="fu">filter</span>(</span>
+<span id="cb7-3"><a href=""></a>    island <span class="sc">==</span> <span class="st">"Torgersen"</span></span>
+<span id="cb7-4"><a href=""></a>  ) <span class="sc">|&gt;</span> </span>
+<span id="cb7-5"><a href=""></a>  <span class="fu">mutate</span>(</span>
+<span id="cb7-6"><a href=""></a>    <span class="at">mean_bill =</span> <span class="fu">mean</span>(bill_len)</span>
+<span id="cb7-7"><a href=""></a>  )</span>
+<span id="cb7-8"><a href=""></a></span>
+<span id="cb7-9"><a href=""></a>penguins<span class="sc">$</span>mean_bill</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell fragment">
+<div class="cell-output cell-output-stdout">
+<pre><code> [1] NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA
+[26] NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA
+[51] NA NA</code></pre>
+</div>
+</div>
+<ul>
+<li class="fragment">Where’s my mean bill length!?</li>
+</ul>
+</div>
+</div>
+</section></section>
+<section>
+<section id="tidyr" class="title-slide slide level1 center">
+<h1><code>tidyr</code></h1>
+
+</section>
+<section id="tidy-data" class="slide level2">
 <h2>‘tidy’ data</h2>
 <div class="fragment">
 <blockquote>
@@ -286,109 +493,33 @@ Joshua Wilson Black <a href="https://orcid.org/0000-0002-8272-5763" class="quart
 </div><div class="column" style="width:30%;">
 <p><img data-src="images/oscar.png"></p>
 </div></div>
-</section></section>
-<section>
-<section id="dplyr" class="title-slide slide level1 center">
-<h1><code>dplyr</code></h1>
-
 </section>
-<section id="dplyr-1" class="slide level2">
-<h2><code>dplyr</code></h2>
-<ul>
-<li class="fragment">A ‘grammar’ for data manipulation.
-<ul>
-<li class="fragment">Grammar in the sense of <code>ggplot2</code> (‘Grammar of Graphics’)</li>
-<li class="fragment">An abstract, universal, way of thinking about structure.</li>
-</ul></li>
-<li class="fragment">The core: a set of ‘verbs’ — things you can do to data.</li>
-<li class="fragment">The ideal of <code>dplyr</code>:
-<ul>
-<li class="fragment">Reading: mostly human readable</li>
-<li class="fragment">Writing: encourages us to break up problem to a series of simple steps</li>
-</ul></li>
-</ul>
-</section>
-<section id="some-verbs" class="slide level2">
-<h2>Some verbs</h2>
-<ul>
-<li class="fragment">We’ll learn these in context, but, for example:
-<ul>
-<li class="fragment"><code>select()</code>: select one or more columns</li>
-<li class="fragment"><code>filter()</code>: filter data</li>
-<li class="fragment"><code>mutate()</code>: create new columns</li>
-</ul></li>
-</ul>
-</section>
-<section id="pipes" class="slide level2 smaller">
-<h2>Pipes</h2>
-<ul>
-<li class="fragment">We string together verbs using pipes.
-<ul>
-<li class="fragment"><code>|&gt;</code> or <code>%&gt;%</code></li>
-</ul></li>
-<li class="fragment">e.g.:</li>
-</ul>
-<div class="fragment">
-<div class="sourceCode" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href=""></a>my_data <span class="ot">&lt;-</span> my_data <span class="sc">|&gt;</span> </span>
-<span id="cb1-2"><a href=""></a>  <span class="fu">filter</span>(</span>
-<span id="cb1-3"><a href=""></a>    height <span class="sc">&lt;</span> <span class="dv">190</span></span>
-<span id="cb1-4"><a href=""></a>  ) <span class="sc">|&gt;</span> </span>
-<span id="cb1-5"><a href=""></a>  <span class="fu">mutate</span>(</span>
-<span id="cb1-6"><a href=""></a>    <span class="at">height_ft =</span> height <span class="sc">*</span> <span class="fl">0.032808399</span>,</span>
-<span id="cb1-7"><a href=""></a>    <span class="at">mean_score =</span> <span class="fu">mean</span>(test_1, test_2, test_3)</span>
-<span id="cb1-8"><a href=""></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<ul>
-<li class="fragment"><strong>NB:</strong> you can use variable names inside these functions (the <code>dplyr</code> ‘verbs’).</li>
-<li class="fragment">Saves you constantly having to type, e.g., <code>my_data$height</code>.</li>
-</ul>
-</section>
-<section id="grouped-data" class="slide level2">
-<h2>Grouped data</h2>
-<ul>
-<li class="fragment">We can apply the same steps to groups in the data <em>independently</em>.
-<ul>
-<li class="fragment">e.g., apply a series of opperations separately to male and female experimental participants.</li>
-<li class="fragment"><code>group_by()</code>: Creates groups</li>
-</ul></li>
-<li class="fragment">Some functions implicitly group…
-<ul>
-<li class="fragment"><code>count(sex)</code>: if you had a column called ‘sex’, this could group the data by the values in ‘sex’ and count how many rows there are in each group.</li>
-</ul></li>
-</ul>
-</section>
-<section id="pipe-problems" class="slide level2">
-<h2>Pipe problems</h2>
-<iframe data-external="1" src="https://www.youtube.com/embed/Ib-Xwuo2uss" width="100%" height="80%" title="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen=""></iframe>
-</section>
-<section id="blocked" class="slide level2">
-<h2>Blocked</h2>
-<ul>
-<li class="fragment">Two kinds of pipe problem:
-<ol type="1">
-<li class="fragment">Nothings coming through <span class="fragment">(i.e., you get an error message).</span></li>
-<li class="fragment">Mysterious liquids <span class="fragment">(i.e., not what you expected and/or warning messages).</span></li>
-</ol></li>
-</ul>
-</section>
-<section id="find-an-inspection-opening" class="slide level2">
-<h2>Find an ‘inspection opening’</h2>
-<ul>
-<li class="fragment">We look at the output of each stage of a pipeline.</li>
-<li class="fragment">We’ll look at this in a real example in a moment.</li>
-</ul>
-</section></section>
-<section>
-<section id="tidyr" class="title-slide slide level1 center">
-<h1><code>tidyr</code></h1>
-
-</section>
-<section id="pivoting" class="slide level2">
+<section id="pivoting" class="slide level2 smaller">
 <h2>Pivoting</h2>
-
-<img data-src="images/tidyr-longer-wider.gif" class="r-stretch"><div class="footer">
-<p>Source: Gavin Simpson via Garrick Aden-Buie’s (<code>@grrrck</code>) Tidy Animated Verbs modified by Mara Averick (<code>@dataandme</code>)</p>
+<div class="columns">
+<div class="column" style="width:40%;">
+<p><img data-src="images/tidyr-longer-wider.gif"></p>
+</div><div class="column" style="width:60%;">
+<ul>
+<li class="fragment">Are our ‘observations’ participants, vowel tokens, or individual formant readings.</li>
+<li class="fragment">Varies with context and sometimes we need to switch between contexts.</li>
+<li class="fragment">Wider data has more columns and (usually) fewer rows.</li>
+<li class="fragment">Longer data has fewer columns and (usually) more rows.</li>
+<li class="fragment"><code>tidyr</code> provides the functions <code>pivot_wider()</code> and <code>pivot_longer()</code>.</li>
+</ul>
+</div></div>
+<div class="footer">
+<p>Image source: Gavin Simpson via Garrick Aden-Buie’s (<code>@grrrck</code>) Tidy Animated Verbs modified by Mara Averick (<code>@dataandme</code>)</p>
 </div>
+</section></section>
+<section>
+<section id="what-now" class="title-slide slide level1 center">
+<h1>What now?</h1>
+
+</section>
+<section id="what-now-1" class="slide level2">
+<h2>What now?</h2>
+<p>Work thorugh</p>
 </section></section>
 <section id="references" class="title-slide slide level1 smaller scrollable">
 <h1>References</h1>
@@ -406,10 +537,10 @@ Joshua Wilson Black <a href="https://orcid.org/0000-0002-8272-5763" class="quart
 Allaire, JJ, Yihui Xie, Christophe Dervieux, Jonathan McPherson, Javier Luraschi, Kevin Ushey, Aron Atkins, et al. 2024. <em><span class="nocase">rmarkdown</span>: Dynamic Documents for r</em>. <a href="https://github.com/rstudio/rmarkdown">https://github.com/rstudio/rmarkdown</a>.
 </div>
 <div id="ref-here" class="csl-entry" role="listitem">
-Müller, Kirill. 2020. <em><span class="nocase">here</span>: A Simpler Way to Find Your Files</em>. <a href="https://CRAN.R-project.org/package=here">https://CRAN.R-project.org/package=here</a>.
+Müller, Kirill. 2020. <em><span class="nocase">here</span>: A Simpler Way to Find Your Files</em>. <a href="https://doi.org/10.32614/CRAN.package.here">https://doi.org/10.32614/CRAN.package.here</a>.
 </div>
 <div id="ref-base" class="csl-entry" role="listitem">
-R Core Team. 2024. <em><span>R</span>: A Language and Environment for Statistical Computing</em>. Vienna, Austria: R Foundation for Statistical Computing. <a href="https://www.R-project.org/">https://www.R-project.org/</a>.
+R Core Team. 2025. <em><span>R</span>: A Language and Environment for Statistical Computing</em>. Vienna, Austria: R Foundation for Statistical Computing. <a href="https://www.R-project.org/">https://www.R-project.org/</a>.
 </div>
 <div id="ref-tidyverse" class="csl-entry" role="listitem">
 Wickham, Hadley, Mara Averick, Jennifer Bryan, Winston Chang, Lucy D’Agostino McGowan, Romain François, Garrett Grolemund, et al. 2019. <span>“Welcome to the <span class="nocase">tidyverse</span>.”</span> <em>Journal of Open Source Software</em> 4 (43): 1686. <a href="https://doi.org/10.21105/joss.01686">https://doi.org/10.21105/joss.01686</a>.
@@ -419,6 +550,9 @@ Xie, Yihui, J. J. Allaire, and Garrett Grolemund. 2018. <em>R Markdown: The Defi
 </div>
 <div id="ref-rmarkdown2020" class="csl-entry" role="listitem">
 Xie, Yihui, Christophe Dervieux, and Emily Riederer. 2020. <em>R Markdown Cookbook</em>. Boca Raton, Florida: Chapman; Hall/CRC. <a href="https://bookdown.org/yihui/rmarkdown-cookbook">https://bookdown.org/yihui/rmarkdown-cookbook</a>.
+</div>
+<div id="ref-kableExtra" class="csl-entry" role="listitem">
+Zhu, Hao. 2024. <em><span class="nocase">kableExtra</span>: Construct Complex Table with <span>“<span class="nocase">kable</span>”</span> and Pipe Syntax</em>. <a href="https://doi.org/10.32614/CRAN.package.kableExtra">https://doi.org/10.32614/CRAN.package.kableExtra</a>.
 </div>
 </div>
 </section>
