@@ -305,7 +305,7 @@ usethis::create_from_github(
 ```{r}
 #| echo: false
 grateful::nocite_references(
-  grateful::cite_packages(output = "citekeys", out.dir = here())
+  grateful::cite_packages(output = "citekeys", out.dir = here("slides"))
 )
 ```
 

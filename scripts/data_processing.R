@@ -28,7 +28,8 @@ word_frequencies <- vowels$word_freq
 # Get the first hundred values
 word_frequencies[1:100]
 
-# More examples are provided at https://nzilbb.github.io/statistics_workshops/chapters/data_processing.html
+# More examples are provided at
+# https://nzilbb.github.io/statistics_workshops/chapters/data_processing.html
 # I won't enter them *all* for you here!
 
 # Tidyverse approaches
