@@ -4,7 +4,7 @@
 This repository contains the slides, scripts, and data required for the
 "Data processing" NZILBB R, Stats, and Open Science workshop.
 
-Slides can be viewed online [here](https://nzilbb.github.io/ws-data-processing)
+Slides can be viewed online [here](https://nzilbb.github.io/ws-data-processing/slides)
 
 The easiest way to interact with this material is to run the following command
 in your R console:
